@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+	
+	
+    
+        <script>
+	        function calculateTotal() {
+	            var total = 0;
+	            var rows = document.getElementById('invoiceTable').rows;
+	            for (var i = 1; i < rows.length; i++) {
+	                var quantity = parseFloat(rows[i].cells[2].children[0].value);
+	                var price = parseFloat(rows[i].cells[3].children[0].value);
+	                if (!isNaN(quantity) && !isNaN(price)) {
+	                    var subtotal = quantity * price;
+	                    rows[i].cells[4].children[0].value = subtotal.toFixed(2);
+	                    total += subtotal;
+	                }
+	            }
+	            document.getElementById('totalAmount').value = total.toFixed(2);
+	            return false;  // Prevent form submission
+	        }
+	    </script>
+    
+    <!-- Custom styles -->
+    <style>
+        body {
+			background-image: url('https://wallpaperset.com/w/full/f/6/7/142016.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+        
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        .container {
+           text-align: center;
+            background-color: #fff;
+            padding: 25px 40px;
+            max-width: 600px;
+            margin: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+		.btn-left{		
+    background-color: #28a745;
+    color: white;
+		}
+		.btn-left:hover {
+    background-color: red; /* Darker green on hover */
+    color: white;
+}
+.btn-secondary{		
+    background-color: #28a745;
+    color: white;
+		}
+		.btn-secondary:hover {
+    background-color: red; /* Darker green on hover */
+    color: white;
+}
+        .btn-primary {
+            background-color: #ff0000;
+            border: none;
+            font-weight: bold;
+        }
+        .btn-primary:hover {
+            background-color: #111;
+        }
+        .logo {
+            max-width: 100px;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        th {
+            font-weight: bold;
+            text-align: center;
+        }
+    
+		
+		/* Navbar Styles */
+.navbar-custom {
+    background-color: #ff0000; /* Primary color for navbar */
+    padding: 15px 0;
+}
+
+.navbar-custom .navbar-brand {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.navbar-custom .nav-link {
+    color: white;
+    font-size: 16px;
+	font-weight: bold;
+    margin-right: 92px;
+    text-decoration: none;
+}
+
+.navbar-custom .nav-link:hover {
+    color: #ffc107;
+}
+
+	    .btn-left {
+		  float: left;
+		}
+    </style>
+</head>
+<body>
+    
+    	<nav class="navbar navbar-expand-lg navbar-custom">
+		    <div class="container-fluid">
+		        <a class="navbar-brand" href="#">+PharmaPlus+</a>
+		        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+		            <span class="navbar-toggler-icon"></span>
+		        </button>
+		        <div class="collapse navbar-collapse" id="navbarNav">
+		            <ul class="navbar-nav">
+		                <li class="nav-item">
+		                    <a class="nav-link" href="/supplier/home"><i class="glyphicon glyphicon-home"></i> Home</a>
+		                </li>
+		                <li>   <li>
+		                <li class="nav-item">
+		                    <a class="nav-link" href="/stock"><i class="glyphicon glyphicon-th-large"></i> Stock</a>
+		                </li>
+		                <li class="nav-item">
+		                    <a class="nav-link" href="/supplier"><i class="fas fa-handshake"></i> Supplier</a>
+		                </li>		                
+		                
+		                
+		                <li class="nav-item">
+		                    <a class="nav-link active" aria-current="page" href="/invoice"><i class="fas fa-file-invoice"></i> Bill</a>
+		                </li>
+		                <li class="nav-item">
+					        <a class="nav-link" href="/expert"><i class="fas fa-user-friends"></i> Ask Expert</a>
+				        </li>
+		                <li class="nav-item">
+		                    <a class="nav-link" href="/info"><i class="fas fa-info-circle"></i> About Us</a>
+		                </li>
+						<li class="nav-item">
+							<a class="nav-link" href="/stock/login"><i class="fas fa-sign-out-alt"></i>Logout</a>
+						</li>  
+		            </ul>
+		        </div>
+		    </div>
+		</nav>
+		
+	    <div class="container">
+	        <img src="https://seeklogo.com/images/P/pharmacy-logo-4729C66E18-seeklogo.com.png" alt="Pharmacy Logo" class="logo"> <!-- Add your logo image -->
+	        <h1 class="text-center my-4">Bill Calculation</h1>
+	        
+	        <form onsubmit="return calculateTotal()">
+	        <div class="mb-3 row">
+	            <label for="customerName" class="col-sm-4 col-form-label">Customer Name:</label>
+	            <div class="col-sm-8">
+	                <input type="text" id="customerName" name="customerName" class="form-control">
+	            </div>
+	        </div>
+	        <div class="mb-3 row">
+			    <label for="customerContact" class="col-sm-4 col-form-label">Customer Contact:</label>
+			    <div class="col-sm-8">
+			        <input type="text" id="customerContact" name="customerContact" class="form-control">
+			    </div>
+			</div>
+			
+			<div class="mb-3 row">
+			    <label for="customerAddress" class="col-sm-4 col-form-label">Customer Address:</label>
+			    <div class="col-sm-8">
+			        <input type="text" id="customerAddress" name="customerAddress" class="form-control">
+			    </div>
+			</div>
+			
+			<div class="mb-3 row">
+			    <label for="customerAge" class="col-sm-4 col-form-label">Customer Age:</label>
+			    <div class="col-sm-8">
+			        <input type="number" id="customerAge" name="customerAge" class="form-control">
+			    </div>
+			</div>
+			
+			<div class="mb-3 row">
+			    <label for="customerGender" class="col-sm-4 col-form-label">Customer Gender:</label>
+			    <div class="col-sm-8">
+			        <select id="customerGender" name="customerGender" class="form-control">
+		        		<option value="">Select Gender</option>
+			            <option value="male">Male</option>
+			            <option value="female">Female</option>
+			            <option value="other">Other</option>
+			        </select>
+            	</div>
+		   	</div>
+	        <!-- More fields... -->
+	        <table id="invoiceTable" class="table">
+	            <thead>
+	                <tr>
+	                    <th>Drug ID</th>
+	                    <th>Drug Name</th>
+	                    <th>Quantity</th>
+	                    <th>Price</th>
+	                    <th>Total</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                <tr>
+	                    <td><input type="text" id="drugId1" name="drugId1" class="form-control"></td>
+	                    <td><input type="text" id="drugName1" name="drugName1" class="form-control"></td>
+	                    <td><input type="number" id="quantity1" name="quantity1" class="form-control"></td>
+	                    <td><input type="number" step="0.01" id="price1" name="price1" class="form-control"></td>
+	                    <td><input type="number" step="0.01" id="total1" name="total1" class="form-control" readonly></td>
+	                    <td><button type="button" onclick="deleteRow(this)" class="btn btn-danger">
+	                    	<i class="glyphicon glyphicon-trash"></i>
+	                    </button></td>
+	                </tr>
+	                <!-- More rows as needed -->
+	            </tbody>
+	        </table>
+	        <br>
+	        <button type="button" onclick="addRow()" class="btn btn-secondary btn-left">Add Drug</button>
+	        <br><br>
+	        <div class="mb-3 row">
+	            <label for="totalAmount" class="col-sm-4 col-form-label">Total Amount:</label>
+	            <div class="col-sm-8">
+	                <input type="number" step="0.01" id="totalAmount" name="totalAmount" class="form-control" readonly>
+	            </div>
+	        </div>
+	        <br>
+	        <button type="submit" class="btn btn-secondary">Calculate</button>
+	        <button type="submit" onclick="genBill()" class="btn btn-secondary">Generate Bill</button>
+	        
+	    </form>
+	    <script>
+	        function addRow() {
+		        var table = document.getElementById('invoiceTable');
+		        var row = table.insertRow(-1);
+		        var cell1 = row.insertCell(0);
+		        var cell2 = row.insertCell(1);
+		        var cell3 = row.insertCell(2);
+		        var cell4 = row.insertCell(3);
+		        var cell5 = row.insertCell(4);
+		        var cell6 = row.insertCell(5);
+		        cell1.innerHTML = '<input type="text" name="drugId" class="form-control">';
+		        cell2.innerHTML = '<input type="text" name="drugName" class="form-control">';
+		        cell3.innerHTML = '<input type="number" name="quantity" class="form-control">';
+		        cell4.innerHTML = '<input type="number" step="0.01" name="price" class="form-control">';
+		        cell5.innerHTML = '<input type="number" step="0.01" name="total" class="form-control" readonly>';
+		        cell6.innerHTML = '<button type="button" onclick="deleteRow(this)" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i></button>';
+		    }
+    
+
+	        
+	        function deleteRow(btn) {
+			    var row = btn.parentNode.parentNode;
+			    row.parentNode.removeChild(row);
+			}
+			
+			
+			function genBill() {
+    var doc = new jsPDF();
+    
+    // Set default font
+    doc.setFont('helvetica');
+    
+    // Add background pattern
+    doc.setDrawColor(200, 200, 200);
+    doc.setFillColor(248, 249, 250);
+    doc.rect(0, 0, 210, 297, 'F');
+    
+    // Add decorative header
+    doc.setFillColor(58, 83, 155); // Dark blue
+    doc.rect(0, 0, 210, 40, 'F');
+    
+    // Pharmacy logo and name
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.text('+PharmaPlus+', 105, 25, { align: 'center' });
+    
+    // Invoice title
+    doc.setFontSize(16);
+    doc.setTextColor(58, 83, 155);
+    doc.text('INVOICE', 105, 55, { align: 'center' });
+    
+    // Current date
+    var today = new Date();
+    var dateStr = today.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        weekday: 'long'
+    });
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Date: ' + dateStr, 160, 45);
+    
+    // Customer details section
+    doc.setFillColor(230, 230, 250); // Light purple
+    doc.rect(10, 65, 190, 40, 'F');
+    doc.setDrawColor(200, 200, 200);
+    doc.rect(10, 65, 190, 40);
+    
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text('CUSTOMER DETAILS', 20, 75);
+    
+    var customerName = document.getElementById('customerName').value;
+    var customerContact = document.getElementById('customerContact').value;
+    var customerAddress = document.getElementById('customerAddress').value;
+    var customerAge = document.getElementById('customerAge').value;
+    var customerGender = document.getElementById('customerGender').value;
+    
+    doc.setFontSize(10);
+    doc.text('Name: ' + customerName, 20, 85);
+    doc.text('Contact: ' + customerContact, 20, 95);
+    doc.text('Address: ' + customerAddress, 100, 85);
+    doc.text('Age/Gender: ' + customerAge + ' / ' + customerGender, 100, 95);
+    
+    // Table header
+    doc.setFillColor(58, 83, 155);
+    doc.rect(10, 110, 190, 10, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.text('Drug ID', 15, 117);
+    doc.text('Drug Name', 45, 117);
+    doc.text('Qty', 110, 117);
+    doc.text('Unit Price', 140, 117);
+    doc.text('Total', 180, 117);
+    
+    // Table rows
+    var table = document.getElementById('invoiceTable');
+    var yOffset = 125;
+    var grandTotal = 0;
+    
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    
+    for (var i = 1; i < table.rows.length; i++) {
+        var row = table.rows[i];
+        var drugId = row.cells[0].querySelector('input').value;
+        var drugName = row.cells[1].querySelector('input').value;
+        var quantity = row.cells[2].querySelector('input').value;
+        var price = row.cells[3].querySelector('input').value;
+        var total = row.cells[4].querySelector('input').value;
+        
+        // Alternate row colors
+        if (i % 2 === 0) {
+            doc.setFillColor(240, 240, 240);
+            doc.rect(10, yOffset - 5, 190, 10, 'F');
+        }
+        
+        doc.text(drugId, 15, yOffset);
+        doc.text(drugName, 45, yOffset);
+        doc.text(quantity, 110, yOffset, { align: 'right' });
+        doc.text('$' + parseFloat(price).toFixed(2), 140, yOffset, { align: 'right' });
+        doc.text('$' + parseFloat(total).toFixed(2), 180, yOffset, { align: 'right' });
+        
+        grandTotal += parseFloat(total);
+        yOffset += 10;
+    }
+    
+    // Grand total section
+    doc.setDrawColor(58, 83, 155);
+    doc.setLineWidth(0.5);
+    doc.line(120, yOffset + 10, 190, yOffset + 10);
+    
+    doc.setFontSize(12);
+    doc.text('Grand Total:', 140, yOffset + 20, { align: 'right' });
+    doc.text('$' + grandTotal.toFixed(2), 180, yOffset + 20, { align: 'right' });
+    
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Thank you for your purchase!', 105, 280, { align: 'center' });
+    doc.text('For any queries, contact: support@pharmaplus.com', 105, 285, { align: 'center' });
+    doc.text('+PharmaPlus+ - Your Trusted Pharmacy Partner', 105, 290, { align: 'center' });
+	updateStockQuantities();
+    // Save the PDF
+    doc.save('PharmaPlus_Invoice_' + today.getTime() + '.pdf');
+}
+function updateStockQuantities() {
+    var updates = [];
+    var table = document.getElementById('invoiceTable');
+    
+    // Collect all drug updates
+    for (var i = 1; i < table.rows.length; i++) {
+        var row = table.rows[i];
+        var drugId = row.cells[0].querySelector('input').value;
+        var quantity = row.cells[2].querySelector('input').value;
+        
+        if (drugId && quantity) {
+            updates.push({
+                drugId: drugId,
+                quantity: quantity
+            });
+        }
+    }
+    
+    // Send updates to server
+    if (updates.length > 0) {
+        fetch('/api/update-stock', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ updates: updates })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Bill generated and stock updated successfully!');
+                // Optionally refresh the page or update UI
+                window.location.reload();
+            } else {
+                alert('Error updating stock: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error updating stock quantities');
+        });
+    }
+}
+
+						
+			        
+	    </script>
+	        
+	             
+	        
+	        
+	    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
+    
+</body>
+</html>
